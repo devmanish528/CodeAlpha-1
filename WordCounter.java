@@ -7,8 +7,8 @@ import java.awt.event.ActionListener;
 
 public class WordCounter extends JFrame {
     private JTextArea textArea;
-    private JButton countButton;
     private JLabel resultLabel;
+    private JButton countButton;
 
     public WordCounter() {
         // Set up the frame
@@ -22,31 +22,34 @@ public class WordCounter extends JFrame {
         textArea = createTextArea();
         add(new JScrollPane(textArea), BorderLayout.CENTER); // Add scroll pane
 
-        // Create and set up the count button (optional, as we will count dynamically)
-        countButton = createCountButton();
-        add(countButton, BorderLayout.SOUTH);
-
         // Create and set up the result label
         resultLabel = createResultLabel();
         add(resultLabel, BorderLayout.NORTH);
 
-        // Add a DocumentListener to the text area to update word count dynamically
+        // Create and set up the count button
+        countButton = createCountButton();
+        add(countButton, BorderLayout.SOUTH);
+
+        // Add a DocumentListener to the text area to show "Typing..." while typing
         textArea.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
-                updateWordCount();
+                resultLabel.setText("Typing...");
             }
 
             @Override
             public void removeUpdate(DocumentEvent e) {
-                updateWordCount();
+                resultLabel.setText("Typing...");
             }
 
             @Override
             public void changedUpdate(DocumentEvent e) {
-                updateWordCount();
+                resultLabel.setText("Typing...");
             }
         });
+
+        // Set initial message
+        resultLabel.setText("Word Count: 0");
     }
 
     // Method to count words
@@ -77,6 +80,15 @@ public class WordCounter extends JFrame {
         return area;
     }
 
+    // Method to create and configure the result label
+    private JLabel createResultLabel() {
+        JLabel label = new JLabel("Word Count: 0", SwingConstants.CENTER);
+        label.setFont(new Font("Arial", Font.BOLD, 24));
+        label.setForeground(new Color(0, 128, 0)); // Forest green text
+        label.setPreferredSize(new Dimension(getWidth(), 50)); // Make it span the width of the frame
+        return label;
+    }
+
     // Method to create and configure the count button
     private JButton createCountButton() {
         JButton button = new JButton("Count Words");
@@ -87,25 +99,13 @@ public class WordCounter extends JFrame {
         button.setBorderPainted(false); // No border for a cleaner look
         button.setPreferredSize(new Dimension(200, 50)); // Fixed button size
         button.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Hand cursor on hover
-        button.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(100, 149, 237)); // Lighter blue on hover
-            }
-
-            public void mouseExited(java.awt.event.MouseEvent evt) {
-                button.setBackground(new Color(70, 130, 180)); // Reset to original color
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateWordCount(); // Update word count when button is clicked
             }
         });
         return button;
-    }
-
-    // Method to create and configure the result label
-    private JLabel createResultLabel() {
-        JLabel label = new JLabel("Word Count: 0", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 24));
-        label.setForeground(new Color(0, 128, 0)); // Forest green text
-        label.setPreferredSize(new Dimension(getWidth(), 50)); // Make it span the width of the frame
-        return label;
     }
 
     // Main method to launch the application
